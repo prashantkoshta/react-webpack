@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 
-//import { Hello } from "./component/hello";
+import { Hello } from "./component/hello";
 
 //require("./../style/css/app.scss");
 //import s from "./assets/css/main.css";
-//import t from "./assets/css/app.scss";
+import t from "./assets/css/app.scss";
 
 /*const Helloa = (props) => {
     return (
@@ -29,7 +29,7 @@ class Helloa extends React.Component{
 
 class App extends React.Component{
     render(){
-        return (<div>I am good here prashant</div>);
+        return (<Hello compiler="RXJS" framework="TPP"></Hello>);
     };
 }
 

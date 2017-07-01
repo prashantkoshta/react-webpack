@@ -5,6 +5,11 @@ var ReactDOM = require('react-dom');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+const extractSass = new ExtractTextPlugin({
+    filename: "[name].style.css"
+    //disable: process.env.NODE_ENV === "development"
+});
+
 const config = {
     devtool: 'inline-source-map',
     context: path.resolve(__dirname, 'src'),
@@ -27,25 +32,12 @@ const config = {
     },
 
     resolve: {
-        extensions: [".js", ".jsx",".json"]
+        extensions: [".jsx", ".js",".json",".scss"]
     },
-
-    plugins: [
-        new HtmlWebpackPlugin(
-            {
-                title: 'Output Management',
-                favicon: './assets/favicon.ico',
-                template : 'index.html',
-                hash :true
-            }
-        ),
-        new ExtractTextPlugin('styles.css'),
-    ],
-
 
     module: {
         rules: [
-            {
+            /*{
                 test:"/\.scss$/",
                 use: ExtractTextPlugin.extract({
                     fallbackLoader:'style-loader',
@@ -53,6 +45,31 @@ const config = {
                     publicPath:'/dist'
                 }),
                 exclude:"/node_modules/"
+            },
+            {
+                test: /\.css$/,
+                use: [ 'style-loader', 'css-loader' ],
+                exclude:"/node_modules/"
+            },*/
+            {
+                test: /\.scss$/,
+                use:extractSass.extract({
+                    use: [
+                        {
+                            loader: "css-loader", // translates CSS into CommonJS
+                            options: {
+                                sourceMap: true
+                            }
+                        }, {
+                            loader: "sass-loader", // compiles Sass to CSS
+                            options: {
+                                sourceMap: true
+                            }
+                        }
+                    ],
+                    // use style-loader in development
+                     fallback: "style-loader"
+                })
             },
             {
                 test: /\.(png|jpg)$/,
@@ -66,16 +83,26 @@ const config = {
                 exclude: [/node_modules/],
                 use: [{
                     loader: 'babel-loader',
-                    options: { 
-                        presets: ['env'],
-                        plugins: ['transform-runtime']
-                    },
+                    options: {
+                        presets: ['env']
+                    }
                 }],
             },
            
         ],
     },
 
+    plugins: [
+        new HtmlWebpackPlugin(
+            {
+                //title: 'Output Management',
+                favicon: './assets/favicon.ico',
+                template : 'index.html',
+                hash :true
+            }
+        ),
+        extractSass,
+    ]
 
 };
 
